@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Game Ranking and Recommendations</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="p-4">
+    <h1 class="mb-4">🎮 Game Ranking and Recommendation System</h1>
+
+    <!-- AI Recommendation Button -->
+    <a href="/ai_recommend" class="btn btn-success mb-4">✨ Try AI-Powered Game Recommendations</a>
+
+    <h2>Top 10 Best-Selling Games</h2>
+    <ul>
+      {% for game in top_games.itertuples() %}
+        <li>{{ game.title }} ({{ game.console  }}) - {{ game.total_sales  }} million sales</li>
+      {% endfor %}
+    </ul>
+
+    <h2>Pick a Genre to Get Recommendations</h2>
+    <form method="POST">
+        <select name="genre" class="form-select" onchange="this.form.submit()">
+            <option value="">-- Select Genre --</option>
+            {% for genre in genres %}
+                <option value="{{ genre }}" {% if genre == request.form.genre %}selected{% endif %}>{{ genre }}</option>
+            {% endfor %}
+        </select>
+    </form>
+
+    {% if recommended is not none %}
+    <h3 class="mt-4">Recommended {{ request.form.genre }} Games:</h3>
+    <ul>
+        {% for game in recommended.itertuples() %}
+            <li>{{ game.title  }} - {{ game.total_sales }} million sales</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    <h2 class="mt-5">Genre Sales Chart</h2>
+    <img src="{{ url_for('static', filename='genre_chart.png') }}" alt="Genre Chart" class="img-fluid">
+</body>
+</html>
